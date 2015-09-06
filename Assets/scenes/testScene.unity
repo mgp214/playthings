@@ -241,10 +241,9 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 667455082}
   m_LocalRotation: {x: .161086783, y: 0, z: 0, w: .986940265}
-  m_LocalPosition: {x: 4.61000013, y: 5.05000019, z: 8.68000031}
+  m_LocalPosition: {x: 4.61000013, y: 52.2000008, z: 8.68000031}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1348559310}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!114 &667455088
@@ -259,14 +258,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraMoveSpeed: 2
-  cameraRotateSpeed: 35
-  cameraZoomSpeed: .0299999993
-  minHeight: 10
+  minHeight: 2
   maxHeight: 100
-  minDegreesFromForward: 5
-  maxDegreesFromForward: 85
-  zoomFraction: 0
-  zoomDistance: 50
+  clampInDegrees: {x: 360, y: 180}
+  lockCursor: 0
+  sensitivity: {x: 2, y: 2}
+  smoothing: {x: 3, y: 3}
+  targetDirection: {x: 0, y: 0}
+  targetCharacterDirection: {x: 0, y: 0}
 --- !u!1 &724937921
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,46 +399,3 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
---- !u!1 &1348559309
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1348559310}
-  - 114: {fileID: 1348559311}
-  m_Layer: 0
-  m_Name: PivotPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1348559310
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1348559309}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 667455087}
-  m_RootOrder: 0
---- !u!114 &1348559311
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1348559309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2246f27ee30d3cd45b9e5eee3e7679b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pivotPointDistance: 100
-  pivotLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
