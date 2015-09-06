@@ -86,4 +86,12 @@ public class CameraBehavior : MonoBehaviour {
 		var yRotation = Quaternion.AngleAxis(_mouseAbsolute.x, transform.InverseTransformDirection(Vector3.up));
 		transform.localRotation *= yRotation;
 	}
+
+    public void OnTriggerEnter(Collider collider) {
+        collider.gameObject.GetComponent<MeshRenderer>().enabled = false;
+        Debug.Log("Hiding" + collider.gameObject.name);
+    }
+    public void OnTriggerExit(Collider collider) {
+        collider.gameObject.GetComponent<MeshRenderer>().enabled = true;
+    }
 }
