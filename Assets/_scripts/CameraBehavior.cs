@@ -23,6 +23,6 @@ public class CameraBehavior : MonoBehaviour {
         translationVector = gameObject.transform.TransformDirection(translationVector);
         gameObject.transform.Translate(Vector3.ProjectOnPlane(translationVector,Vector3.up), Space.World);
         //apply rotation
-        gameObject.transform.RotateAround(pivotPointTransform.position, Vector3.up, cameraRotateSpeed*Input.GetAxis("Camera Rotation"));
+        gameObject.transform.RotateAround(pivotPointTransform.position, Vector3.up, cameraRotateSpeed/(pivotPointTransform.position-gameObject.transform.position).magnitude*Input.GetAxis("Camera Rotation"));
     }
 }
