@@ -3,8 +3,8 @@ using System.Collections;
 
 public class CameraBehavior : MonoBehaviour {
 
-    public float cameraMoveSpeed,minHeight,maxHeight;
-    private float zoomDistanceToLerp;
+    public float cameraMoveSpeed, minHeight, maxHeight, cameraSmoothing;
+    private float zoomDistanceToLerp, smoothedCameraForward, smoothedCameraStrafe,smoothedCameraVertical;
     private Vector3 zoomPreviousPosition;
 
 
@@ -23,6 +23,9 @@ public class CameraBehavior : MonoBehaviour {
     void Start() {
         // Set target direction to the camera's initial orientation.
         targetDirection = transform.localRotation.eulerAngles;
+        smoothedCameraForward = 0f;
+        smoothedCameraStrafe = 0f;
+        smoothedCameraVertical = 0f;
     }
 	
 	void Update () {
@@ -31,11 +34,17 @@ public class CameraBehavior : MonoBehaviour {
 	}
 
     private void MoveUpdate() {
-        //apply x,z translation
-        Vector3 translationVector = transform.TransformDirection(new Vector3(Input.GetAxis("Camera Strafe"), 0f, Input.GetAxis("Camera Forward")) * cameraMoveSpeed);
-        transform.Translate(Vector3.ProjectOnPlane(translationVector,Vector3.up).normalized, Space.World);
+        //calculate smoothed movement
+        smoothedCameraForward = Mathf.Lerp(smoothedCameraForward, Input.GetAxisRaw("Camera Forward"), cameraSmoothing);
+        smoothedCameraStrafe = Mathf.Lerp(smoothedCameraStrafe, Input.GetAxisRaw("Camera Strafe"), cameraSmoothing);
+        smoothedCameraVertical = Mathf.Lerp(smoothedCameraVertical, Input.GetAxisRaw("Camera Vertical"), cameraSmoothing);
+        //project x and z movement onto world plane, then apply
+        transform.Translate(Vector3.ProjectOnPlane(transform.TransformDirection(new Vector3(smoothedCameraStrafe, 0f, 0f)), Vector3.up).normalized * Mathf.Abs(smoothedCameraStrafe), Space.World);
+        transform.Translate(Vector3.ProjectOnPlane(transform.TransformDirection(new Vector3(0f, 0f, smoothedCameraForward)), Vector3.up).normalized * Mathf.Abs(smoothedCameraForward), Space.World);
+       // Vector3 translationVector = /*transform.TransformDirection(*/new Vector3(smoothedCameraStrafe, 0f, smoothedCameraForward);//);
+       // transform.Translate(translationVector * cameraMoveSpeed, Space.World);
         //apply  y translation, clamped to min/max
-        transform.Translate(new Vector3(0f, Input.GetAxis("Camera Vertical") * cameraMoveSpeed),Space.World);
+        transform.Translate(new Vector3(0f, smoothedCameraVertical * cameraMoveSpeed),Space.World);
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y,minHeight,maxHeight), transform.position.z);
     }
     private void LookUpdate()
