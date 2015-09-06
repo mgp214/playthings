@@ -89,7 +89,6 @@ public class CameraBehavior : MonoBehaviour {
 
     public void OnTriggerEnter(Collider collider) {
         collider.gameObject.GetComponent<MeshRenderer>().enabled = false;
-        Debug.Log("Hiding" + collider.gameObject.name);
     }
     public void OnTriggerExit(Collider collider) {
         collider.gameObject.GetComponent<MeshRenderer>().enabled = true;
