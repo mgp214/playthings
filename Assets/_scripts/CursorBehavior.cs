@@ -4,14 +4,14 @@ using System.Collections;
 
 public class CursorBehavior : MonoBehaviour {
 
-    public float maxCursorDistance;
+    public float maxCursorDistance,freeRotationSpeed;
     public LayerMask cursorLayerMask;
     private GameObject objAtCursor,manipulateObj,manipulateGhost;
     private RaycastHit cursorRayHit;
     private int manipulatedLayerBuffer;
-
+    private int rotateIncrement;
     void Start() {
-
+        rotateIncrement = 0;
     }
 
     void Update() {
@@ -52,6 +52,45 @@ public class CursorBehavior : MonoBehaviour {
             //restore the original layer
             manipulateObj.layer = manipulatedLayerBuffer;
             Destroy(manipulateGhost);
+        }
+        //if the rotate button is down, check for rotation
+        if (Input.GetButton("Select / Rotate") && manipulateGhost) {
+            if (rotateIncrement == 0) {
+                manipulateGhost.transform.Rotate(new Vector3(Input.GetAxis("Camera Strafe"), Input.GetAxis("Camera Forward"), Input.GetAxis("Camera Vertical"))*freeRotationSpeed*Time.deltaTime);
+            } else {
+                if (Input.GetButtonDown("Rotate Pitch Forward")) {
+                    manipulateGhost.transform.Rotate(new Vector3(0f, rotateIncrement, 0f));
+                }
+                if (Input.GetButtonDown("Rotate Pitch Backward")) {
+                    manipulateGhost.transform.Rotate(new Vector3(0f, -rotateIncrement, 0f));
+                }
+                if (Input.GetButtonDown("Rotate Roll Left")) {
+                    manipulateGhost.transform.Rotate(new Vector3(-rotateIncrement, 0f, 0f));
+                }
+                if (Input.GetButtonDown("Rotate Roll Right")) {
+                    manipulateGhost.transform.Rotate(new Vector3(rotateIncrement, 0f, 0f));
+                }
+                if (Input.GetButtonDown("Rotate Yaw Left")) {
+                    manipulateGhost.transform.Rotate(new Vector3(0f, 0f, -rotateIncrement));
+                }
+                if (Input.GetButtonDown("Rotate Yaw Right")) {
+                    manipulateGhost.transform.Rotate(new Vector3(0f, 0f, rotateIncrement));
+                }
+            }
+        }
+        //cycle through rotation increments if the rotatation increment button is pressed
+        if (Input.GetButtonDown("Manipulate Toggle")) {
+            switch (rotateIncrement) {
+                case 0:
+                    rotateIncrement = 15;
+                    break;
+                case 15:
+                    rotateIncrement = 45;
+                    break;
+                case 45:
+                    rotateIncrement = 0;
+                    break;
+            }
         }
         if (manipulateGhost) {
             manipulateGhost.transform.position = transform.position + new Vector3(0f,manipulateGhost.GetComponent<Renderer>().bounds.extents.y+0.01f,0f);

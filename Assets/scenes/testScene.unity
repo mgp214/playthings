@@ -767,6 +767,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxCursorDistance: 50
+  freeRotationSpeed: 360
   cursorLayerMask:
     serializedVersion: 2
     m_Bits: 1280

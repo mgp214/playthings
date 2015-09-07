@@ -29,7 +29,9 @@ public class CameraBehavior : MonoBehaviour {
     }
 	
 	void Update () {
-        MoveUpdate();
+        if (!Input.GetButton("Select / Rotate")) {
+            MoveUpdate();
+        }
         LookUpdate();
 	}
 
