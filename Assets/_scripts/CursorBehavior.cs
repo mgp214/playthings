@@ -54,7 +54,7 @@ public class CursorBehavior : MonoBehaviour {
             Destroy(manipulateGhost);
         }
         if (manipulateGhost) {
-            manipulateGhost.transform.position = transform.position + new Vector3(0f,manipulateGhost.GetComponent<Renderer>().bounds.extents.y,0f);
+            manipulateGhost.transform.position = transform.position + new Vector3(0f,manipulateGhost.GetComponent<Renderer>().bounds.extents.y+0.01f,0f);
         }
     }
 }
