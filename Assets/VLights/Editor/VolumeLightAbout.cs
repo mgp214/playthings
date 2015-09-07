@@ -16,7 +16,7 @@ public class VolumeLightAbout : EditorWindow
     {
         VolumeLightAbout window = EditorWindow.CreateInstance<VolumeLightAbout>();
         window.ShowUtility();
-        window.title = "About V-Lights";
+        //window.title = "About V-Lights";
     }
 
     private void OnGUI()

@@ -12,7 +12,7 @@ GameObject:
   - 23: {fileID: 2320066}
   - 114: {fileID: 11489794}
   - 65: {fileID: 6511656}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: block_1x2x4_ghost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 177618}
   m_Material: {fileID: 13400000, guid: 04f4fd68e0d4ca146ae40af1202573ff, type: 2}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 2, y: 1.05509949, z: 4}
@@ -85,6 +85,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8298632aaf82b754bbfd3f1282950b01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ghostTemplate: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -100,6 +101,14 @@ Prefab:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: ccd867e5a733a624282dd1fb5900b141, type: 2}
+    - target: {fileID: 0}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 177618}

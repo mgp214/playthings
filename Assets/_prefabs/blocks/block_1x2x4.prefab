@@ -13,7 +13,7 @@ GameObject:
   - 114: {fileID: 11489794}
   - 54: {fileID: 5420970}
   - 65: {fileID: 6511656}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: block_1x2x4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,6 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8298632aaf82b754bbfd3f1282950b01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ghostTemplate: {fileID: 177618, guid: 6bea084d38a559b4eaa67c3bbe8d32ed, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -111,6 +112,18 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Mass
       value: .0909999982
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ghost
+      value: 
+      objectReference: {fileID: 177618, guid: 6bea084d38a559b4eaa67c3bbe8d32ed, type: 2}
+    - target: {fileID: 0}
+      propertyPath: ghostTemplate
+      value: 
+      objectReference: {fileID: 177618, guid: 6bea084d38a559b4eaa67c3bbe8d32ed, type: 2}
+    - target: {fileID: 0}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
