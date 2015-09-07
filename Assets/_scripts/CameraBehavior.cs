@@ -6,7 +6,7 @@ public class CameraBehavior : MonoBehaviour {
     public float cameraMoveSpeed, minHeight, maxHeight, cameraSmoothing;
     private float zoomDistanceToLerp, smoothedCameraForward, smoothedCameraStrafe,smoothedCameraVertical;
     private Vector3 zoomPreviousPosition;
-
+    private CursorBehavior cursorBehavior;
 
     Vector2 _mouseAbsolute;
     Vector2 _smoothMouse;
@@ -22,6 +22,7 @@ public class CameraBehavior : MonoBehaviour {
 
     void Start() {
         // Set target direction to the camera's initial orientation.
+        cursorBehavior = GameObject.Find("Cursor").GetComponent<CursorBehavior>();
         targetDirection = transform.localRotation.eulerAngles;
         smoothedCameraForward = 0f;
         smoothedCameraStrafe = 0f;
@@ -29,10 +30,12 @@ public class CameraBehavior : MonoBehaviour {
     }
 	
 	void Update () {
-        if (!Input.GetButton("Select / Rotate")) {
-            MoveUpdate();
+        if (cursorBehavior.offsetMode == false) {
+            if (!Input.GetButton("Select / Rotate")) {
+                MoveUpdate();
+            }
+            LookUpdate();
         }
-        LookUpdate();
 	}
 
     private void MoveUpdate() {
@@ -46,7 +49,7 @@ public class CameraBehavior : MonoBehaviour {
        // Vector3 translationVector = /*transform.TransformDirection(*/new Vector3(smoothedCameraStrafe, 0f, smoothedCameraForward);//);
        // transform.Translate(translationVector * cameraMoveSpeed, Space.World);
         //apply  y translation, clamped to min/max
-        transform.Translate(new Vector3(0f, smoothedCameraVertical * cameraMoveSpeed),Space.World);
+        transform.Translate(new Vector3(0f, smoothedCameraVertical * cameraMoveSpeed,0f),Space.World);
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y,minHeight,maxHeight), transform.position.z);
     }
     private void LookUpdate()

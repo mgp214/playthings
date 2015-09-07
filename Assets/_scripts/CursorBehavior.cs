@@ -8,14 +8,27 @@ public class CursorBehavior : MonoBehaviour {
     public LayerMask cursorLayerMask;
     private GameObject objAtCursor,manipulateObj,manipulateGhost;
     private RaycastHit cursorRayHit;
-    private int manipulatedLayerBuffer;
-    private int rotateIncrement;
+    private int manipulatedLayerBuffer,rotateIncrement;
+    
+    public bool offsetMode { get; private set; }
+    private Vector3 ghostOffset;
+    public float offsetSmoothing, offsetSpeed;
+    private float smoothedOffsetX, smoothedOffsetY, smoothedOffsetZ;
+    private GameObject playerObj;
+
     void Start() {
+        playerObj = GameObject.Find("Camera");
         rotateIncrement = 0;
+        offsetMode = false;
+        smoothedOffsetX = 0f;
+        smoothedOffsetY = 0f;
+        smoothedOffsetZ = 0f;
     }
 
     void Update() {
-        MoveUpdate();
+        if (!offsetMode) {
+            MoveUpdate();
+        }
         ManipulateUpdate();
     }
 
@@ -45,6 +58,8 @@ public class CursorBehavior : MonoBehaviour {
         }
         //if manipulate key is released, place the manip obj at the ghost's position, zero it's velocities, and destroy the ghost
         if (Input.GetButtonUp("Manipulate") && manipulateGhost) {
+            offsetMode = false;
+            ghostOffset = Vector3.zero;
             manipulateObj.GetComponent<Rigidbody>().velocity = Vector3.zero;
             manipulateObj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
             manipulateObj.transform.position = manipulateGhost.transform.position;
@@ -80,20 +95,44 @@ public class CursorBehavior : MonoBehaviour {
         }
         //cycle through rotation increments if the rotatation increment button is pressed
         if (Input.GetButtonDown("Manipulate Toggle")) {
-            switch (rotateIncrement) {
-                case 0:
-                    rotateIncrement = 15;
-                    break;
-                case 15:
-                    rotateIncrement = 45;
-                    break;
-                case 45:
-                    rotateIncrement = 0;
-                    break;
+            //if we are in rotate mode, toggle angle snap
+            if (Input.GetButton("Select / Rotate")) {
+                switch (rotateIncrement) {
+                    case 0:
+                        rotateIncrement = 15;
+                        break;
+                    case 15:
+                        rotateIncrement = 45;
+                        break;
+                    case 45:
+                        rotateIncrement = 0;
+                        break;
+                }
+            } else {
+                //if we are in translate mode, block offset move
+                if (offsetMode) {
+                    offsetMode = false;
+                } else {
+                    offsetMode = true;
+                    ghostOffset = Vector3.zero;
+                }
             }
         }
+        //if manipulating an object in rotation mode, automatically turn off offsetMode
+        if (Input.GetButton("Select / Rotate") && offsetMode && manipulateObj) {
+            offsetMode = false;
+        }
+        if (offsetMode && manipulateGhost) {
+            smoothedOffsetX = Mathf.Lerp(smoothedOffsetX, Input.GetAxisRaw("Camera Strafe"), offsetSmoothing);
+            smoothedOffsetY = Mathf.Lerp(smoothedOffsetY, Input.GetAxisRaw("Camera Vertical"), offsetSmoothing);
+            smoothedOffsetZ = Mathf.Lerp(smoothedOffsetZ, Input.GetAxisRaw("Camera Forward"), offsetSmoothing);
+
+            ghostOffset += Vector3.ProjectOnPlane(playerObj.transform.TransformDirection(new Vector3(smoothedOffsetX, 0f, 0f)), Vector3.up).normalized * Mathf.Abs(smoothedOffsetX) * offsetSpeed;
+            ghostOffset += new Vector3(0f, smoothedOffsetY * offsetSpeed, 0f);
+            ghostOffset += Vector3.ProjectOnPlane(playerObj.transform.TransformDirection(new Vector3(0f, 0f, smoothedOffsetZ)), Vector3.up).normalized * Mathf.Abs(smoothedOffsetZ) * offsetSpeed;
+        }
         if (manipulateGhost) {
-            manipulateGhost.transform.position = transform.position + new Vector3(0f,manipulateGhost.GetComponent<Renderer>().bounds.extents.y+0.01f,0f);
+            manipulateGhost.transform.position = transform.position + new Vector3(0f,manipulateGhost.GetComponent<Renderer>().bounds.extents.y+0.01f,0f) + ghostOffset;
         }
     }
 }
