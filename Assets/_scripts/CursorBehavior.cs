@@ -56,7 +56,7 @@ public class CursorBehavior : MonoBehaviour {
         //if the rotate button is down, check for rotation
         if (Input.GetButton("Select / Rotate") && manipulateGhost) {
             if (rotateIncrement == 0) {
-                manipulateGhost.transform.Rotate(new Vector3(Input.GetAxis("Camera Strafe"), Input.GetAxis("Camera Forward"), Input.GetAxis("Camera Vertical"))*freeRotationSpeed*Time.deltaTime);
+                manipulateGhost.transform.Rotate(new Vector3(Input.GetAxis("Rotate Roll"), Input.GetAxis("Rotate Pitch"), Input.GetAxis("Rotate Yaw")) * freeRotationSpeed * Time.deltaTime);
             } else {
                 if (Input.GetButtonDown("Rotate Pitch Forward")) {
                     manipulateGhost.transform.Rotate(new Vector3(0f, rotateIncrement, 0f));
