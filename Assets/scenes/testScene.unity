@@ -1065,7 +1065,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1280
   offsetSmoothing: .100000001
-  offsetSpeed: .5
+  offsetSpeed: .100000001
 --- !u!4 &1738535876 stripped
 Transform:
   m_PrefabParentObject: {fileID: 427944, guid: 1181025ae08c28448a24d8292f4935f6, type: 2}

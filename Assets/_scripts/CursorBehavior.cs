@@ -60,10 +60,15 @@ public class CursorBehavior : MonoBehaviour {
         if (Input.GetButtonUp("Manipulate") && manipulateGhost) {
             offsetMode = false;
             ghostOffset = Vector3.zero;
-            manipulateObj.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            manipulateObj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            manipulateObj.transform.position = manipulateGhost.transform.position;
-            manipulateObj.transform.rotation = manipulateGhost.transform.rotation;
+            //check that the ghost isn't obstructed
+            if (!manipulateGhost.GetComponent<GhostCollisionChecker>().placementBlocked) {
+                //stop all motion on the block (speedy thing goes in, still thing comes out)
+                manipulateObj.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                manipulateObj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                //copy position info from ghost to actual block
+                manipulateObj.transform.position = manipulateGhost.transform.position;
+                manipulateObj.transform.rotation = manipulateGhost.transform.rotation;
+            }
             //restore the original layer
             manipulateObj.layer = manipulatedLayerBuffer;
             Destroy(manipulateGhost);
