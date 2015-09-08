@@ -10,8 +10,8 @@ public class CursorBehavior : MonoBehaviour {
     private RaycastHit cursorRayHit;
     private int manipulatedLayerBuffer,rotateIncrement;
 
-    public GameObject rotateXTemplate, rotateYTemplate, rotateZTemplate,degreeMarkerTemplate;
-    private GameObject rotateX, rotateY, rotateZ,degreeMarker;
+    public GameObject rotateXTemplate, rotateYTemplate, rotateZTemplate,degreeMarkerTemplate,offsetMarkerTemplate;
+    private GameObject rotateX, rotateY, rotateZ,degreeMarker,offsetMarker;
 
     public bool offsetMode { get; private set; }
     private Vector3 ghostOffset;
@@ -66,6 +66,8 @@ public class CursorBehavior : MonoBehaviour {
             rotateZ = Instantiate(rotateZTemplate, manipulateGhost.transform.position, manipulateGhost.transform.rotation * Quaternion.Euler(0f, 0f, 0f)) as GameObject;
             //create the degree snap marker
             degreeMarker = Instantiate(degreeMarkerTemplate, manipulateGhost.transform.position, manipulateGhost.transform.rotation) as GameObject;
+            //create the offset marker
+            offsetMarker = Instantiate(offsetMarkerTemplate, manipulateGhost.transform.position, manipulateGhost.transform.rotation) as GameObject;
             //update the degree snap marker based on current value of rotateIncrement
             switch (rotateIncrement) {
                 case 0:
@@ -85,6 +87,7 @@ public class CursorBehavior : MonoBehaviour {
             rotateY.transform.SetParent(manipulateGhost.transform,true);
             rotateZ.transform.SetParent(manipulateGhost.transform, true);
             degreeMarker.transform.SetParent(manipulateGhost.transform, true);
+            offsetMarker.transform.SetParent(manipulateGhost.transform, true);
             //determine scaling for arrow mesh based on block bounds for the red guide
             rotateX.transform.GetChild(0).localScale = new Vector3(manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.x + 1.0f, manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.z + 1.0f, 1f);
             //determine letter placement based on block bounds for the red guide
@@ -110,6 +113,7 @@ public class CursorBehavior : MonoBehaviour {
             Destroy(rotateY);
             Destroy(rotateZ);
             Destroy(degreeMarker);
+            Destroy(offsetMarker);
             //check that the ghost isn't obstructed
             if (!manipulateGhost.GetComponent<GhostCollisionChecker>().placementBlocked) {
                 //stop all motion on the block (speedy thing goes in, still thing comes out)
@@ -206,6 +210,7 @@ public class CursorBehavior : MonoBehaviour {
             offsetMode = false;
         }
         if (offsetMode && manipulateGhost) {
+
             smoothedOffsetX = Mathf.Lerp(smoothedOffsetX, Input.GetAxisRaw("Camera Strafe"), offsetSmoothing);
             smoothedOffsetY = Mathf.Lerp(smoothedOffsetY, Input.GetAxisRaw("Camera Vertical"), offsetSmoothing);
             smoothedOffsetZ = Mathf.Lerp(smoothedOffsetZ, Input.GetAxisRaw("Camera Forward"), offsetSmoothing);
@@ -215,7 +220,14 @@ public class CursorBehavior : MonoBehaviour {
             ghostOffset += Vector3.ProjectOnPlane(playerObj.transform.TransformDirection(new Vector3(0f, 0f, smoothedOffsetZ)), Vector3.up).normalized * Mathf.Abs(smoothedOffsetZ) * offsetSpeed;
         }
         if (manipulateGhost) {
-            manipulateGhost.transform.position = transform.position + new Vector3(0f,manipulateGhost.GetComponent<Renderer>().bounds.extents.y+0.01f,0f) + ghostOffset;
+            manipulateGhost.transform.position = transform.position + new Vector3(0f,manipulateGhost.GetComponent<Renderer>().bounds.extents.y+0.05f,0f) + ghostOffset;
+        }
+        if (offsetMarker) {
+            if (offsetMode) {
+                offsetMarker.SetActive(true);
+            } else {
+                offsetMarker.SetActive(false);
+            }
         }
     }
 }

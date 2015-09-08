@@ -153,6 +153,91 @@ Transform:
 Transform:
   m_PrefabParentObject: {fileID: 427944, guid: 1181025ae08c28448a24d8292f4935f6, type: 2}
   m_PrefabInternal: {fileID: 1844470920}
+--- !u!21 &278195571
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 7214 VLights Default Point Light
+  m_Shader: {fileID: 4800000, guid: fba27a6fca09246dab46cfb730cd71b2, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+      data:
+        first:
+          name: _LightColorEmission
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _NoiseTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _ShadowTexture
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _AttenuationTex
+        second:
+          m_Texture: {fileID: 2800000, guid: ac01b50d8e3858d47a7f65a9a6b139d1, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+    m_Floats:
+      data:
+        first:
+          name: _Strength
+        second: 1
+      data:
+        first:
+          name: _SpotExp
+        second: 1
+      data:
+        first:
+          name: _ConstantAttn
+        second: 2.49999976
+      data:
+        first:
+          name: _LinearAttn
+        second: -28.6652164
+      data:
+        first:
+          name: _QuadAttn
+        second: 100
+      data:
+        first:
+          name: _Offset
+        second: 0
+      data:
+        first:
+          name: _NoiseSpeed
+        second: 10
+      data:
+        first:
+          name: _FOV
+        second: 0
+      data:
+        first:
+          name: _FallOff
+        second: 1
+    m_Colors:
+      data:
+        first:
+          name: _Color
+        second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &380579887
 Prefab:
   m_ObjectHideFlags: 0
@@ -431,6 +516,91 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: .5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!21 &708674781
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 7214 VLights Default Light
+  m_Shader: {fileID: 4800000, guid: 6aac0894b3c1e44529fc89af12517e0f, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+      data:
+        first:
+          name: _LightColorEmission
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _NoiseTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _ShadowTexture
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _AttenuationTex
+        second:
+          m_Texture: {fileID: 2800000, guid: ac01b50d8e3858d47a7f65a9a6b139d1, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+    m_Floats:
+      data:
+        first:
+          name: _Strength
+        second: 1
+      data:
+        first:
+          name: _SpotExp
+        second: 12
+      data:
+        first:
+          name: _ConstantAttn
+        second: 1
+      data:
+        first:
+          name: _LinearAttn
+        second: 11.3386812
+      data:
+        first:
+          name: _QuadAttn
+        second: 100
+      data:
+        first:
+          name: _Offset
+        second: 0
+      data:
+        first:
+          name: _NoiseSpeed
+        second: 100
+      data:
+        first:
+          name: _FOV
+        second: 0
+      data:
+        first:
+          name: _FallOff
+        second: 1
+    m_Colors:
+      data:
+        first:
+          name: _Color
+        second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &711681223 stripped
 Transform:
   m_PrefabParentObject: {fileID: 427944, guid: 1181025ae08c28448a24d8292f4935f6, type: 2}
@@ -788,91 +958,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1181025ae08c28448a24d8292f4935f6, type: 2}
   m_IsPrefabParent: 0
---- !u!21 &1329721415
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 7222 VLights Default Light
-  m_Shader: {fileID: 4800000, guid: 6aac0894b3c1e44529fc89af12517e0f, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-      data:
-        first:
-          name: _LightColorEmission
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _NoiseTex
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _ShadowTexture
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _AttenuationTex
-        second:
-          m_Texture: {fileID: 2800000, guid: ac01b50d8e3858d47a7f65a9a6b139d1, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-    m_Floats:
-      data:
-        first:
-          name: _Strength
-        second: 1
-      data:
-        first:
-          name: _SpotExp
-        second: 12
-      data:
-        first:
-          name: _ConstantAttn
-        second: 1
-      data:
-        first:
-          name: _LinearAttn
-        second: 11.3386812
-      data:
-        first:
-          name: _QuadAttn
-        second: 100
-      data:
-        first:
-          name: _Offset
-        second: 0
-      data:
-        first:
-          name: _NoiseSpeed
-        second: 100
-      data:
-        first:
-          name: _FOV
-        second: 0
-      data:
-        first:
-          name: _FallOff
-        second: 1
-    m_Colors:
-      data:
-        first:
-          name: _Color
-        second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &1409688141
 Prefab:
   m_ObjectHideFlags: 0
@@ -986,8 +1071,8 @@ MonoBehaviour:
   meshContainer: {fileID: 0}
   _prevMaterialSpot: {fileID: 2100000, guid: 0ae03080a8dadc6448d3d12b54ed4f3c, type: 2}
   _prevMaterialPoint: {fileID: 2100000, guid: dd36a29b2d153244ba3d06d8217c876c, type: 2}
-  _instancedSpotMaterial: {fileID: 1329721415}
-  _instancedPointMaterial: {fileID: 2055360969}
+  _instancedSpotMaterial: {fileID: 708674781}
+  _instancedPointMaterial: {fileID: 278195571}
 --- !u!33 &1617154462
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1038,7 +1123,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2055360969}
+  - {fileID: 278195571}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -1084,8 +1169,9 @@ MonoBehaviour:
   rotateYTemplate: {fileID: 190976, guid: c562978ed8b789e4593d261ec2ea70a3, type: 2}
   rotateZTemplate: {fileID: 164896, guid: 0b68ebe3dd036114e8b244a159fee55f, type: 2}
   degreeMarkerTemplate: {fileID: 127898, guid: d91ba00e9feb28d469fa1bf59c04545b, type: 2}
+  offsetMarkerTemplate: {fileID: 127898, guid: cb81a4e3e8c764049903d34cf6e15605, type: 2}
   offsetSmoothing: .100000001
-  offsetSpeed: .100000001
+  offsetSpeed: .0500000007
 --- !u!4 &1738535876 stripped
 Transform:
   m_PrefabParentObject: {fileID: 427944, guid: 1181025ae08c28448a24d8292f4935f6, type: 2}
@@ -1338,88 +1424,3 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1181025ae08c28448a24d8292f4935f6, type: 2}
   m_IsPrefabParent: 0
---- !u!21 &2055360969
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 7222 VLights Default Point Light
-  m_Shader: {fileID: 4800000, guid: fba27a6fca09246dab46cfb730cd71b2, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-      data:
-        first:
-          name: _LightColorEmission
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _NoiseTex
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _ShadowTexture
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _AttenuationTex
-        second:
-          m_Texture: {fileID: 2800000, guid: ac01b50d8e3858d47a7f65a9a6b139d1, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-    m_Floats:
-      data:
-        first:
-          name: _Strength
-        second: 1
-      data:
-        first:
-          name: _SpotExp
-        second: 1
-      data:
-        first:
-          name: _ConstantAttn
-        second: 2.49999976
-      data:
-        first:
-          name: _LinearAttn
-        second: -28.6652164
-      data:
-        first:
-          name: _QuadAttn
-        second: 100
-      data:
-        first:
-          name: _Offset
-        second: 0
-      data:
-        first:
-          name: _NoiseSpeed
-        second: 10
-      data:
-        first:
-          name: _FOV
-        second: 0
-      data:
-        first:
-          name: _FallOff
-        second: 1
-    m_Colors:
-      data:
-        first:
-          name: _Color
-        second: {r: 1, g: 1, b: 1, a: 1}
