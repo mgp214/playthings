@@ -19,7 +19,9 @@ public class CursorBehavior : MonoBehaviour {
     private float smoothedOffsetX, smoothedOffsetY, smoothedOffsetZ;
     private GameObject playerObj;
 
-
+    private enum SnapAxis {off,x,y,z};
+    private SnapAxis snapAxis;
+    private GameObject snapAxisMasterObj;
 
     void Start() {
         playerObj = GameObject.Find("Camera");
@@ -28,13 +30,16 @@ public class CursorBehavior : MonoBehaviour {
         smoothedOffsetX = 0f;
         smoothedOffsetY = 0f;
         smoothedOffsetZ = 0f;
+        snapAxis = SnapAxis.off;
     }
 
     void Update() {
         if (!offsetMode) {
             MoveUpdate();
         }
+        SnapAxisUpdate();
         ManipulateUpdate();
+        
     }
 
 	private void MoveUpdate () {
@@ -108,6 +113,7 @@ public class CursorBehavior : MonoBehaviour {
         //if manipulate key is released, place the manip obj at the ghost's position, zero it's velocities, and destroy the ghost
         if (Input.GetButtonUp("Manipulate") && manipulateGhost) {
             offsetMode = false;
+            snapAxis = SnapAxis.off;
             ghostOffset = Vector3.zero;
             Destroy(rotateX);
             Destroy(rotateY);
@@ -120,7 +126,7 @@ public class CursorBehavior : MonoBehaviour {
                 manipulateObj.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 manipulateObj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
                 //check for blocks near the teleported block
-                Collider[] colliderArray = Physics.OverlapSphere(manipulateObj.transform.position,Mathf.Max(new float[] {manipulateObj.GetComponent<Renderer>().bounds.extents.x,
+                Collider[] colliderArray = Physics.OverlapSphere(manipulateObj.transform.position,0.5f + Mathf.Max(new float[] {manipulateObj.GetComponent<Renderer>().bounds.extents.x,
                                                                                                                          manipulateObj.GetComponent<Renderer>().bounds.extents.y,
                                                                                                                          manipulateObj.GetComponent<Renderer>().bounds.extents.z}));
                 foreach (Collider collider in colliderArray) {
@@ -174,37 +180,35 @@ public class CursorBehavior : MonoBehaviour {
             }
         } 
         //cycle through rotation increments if the rotatation increment button is pressed
-        if (Input.GetButtonDown("Manipulate Toggle")) {
-            //if we are in rotate mode, toggle angle snap
-            if (Input.GetButton("Select / Rotate")) {
-                switch (rotateIncrement) {
-                    case 0:
-                        rotateIncrement = 15;
-                        degreeMarker.GetComponent<TextMesh>().text = "15\u00B0";
-                        break;
-                    case 15:
-                        degreeMarker.GetComponent<TextMesh>().text = "45\u00B0";
-                        rotateIncrement = 45;
-                        break;
-                    case 45:
-                        rotateIncrement = 90;
-                        degreeMarker.GetComponent<TextMesh>().text = "90\u00B0";
-                        break;
-                    case 90:
-                        rotateIncrement = 0;
-                        degreeMarker.GetComponent<TextMesh>().text = "free";
-                        break;
-                }
-            } else {
-                //if we are in translate mode, block offset move
-                if (offsetMode) {
-                    offsetMode = false;
-                } else {
-                    offsetMode = true;
-                    ghostOffset = Vector3.zero;
-                }
+        if (Input.GetButtonDown("Angle Snap Toggle") && Input.GetButton("Select / Rotate")) {
+            switch (rotateIncrement) {
+                case 0:
+                    rotateIncrement = 15;
+                    degreeMarker.GetComponent<TextMesh>().text = "15\u00B0";
+                    break;
+                case 15:
+                    degreeMarker.GetComponent<TextMesh>().text = "45\u00B0";
+                    rotateIncrement = 45;
+                    break;
+                case 45:
+                    rotateIncrement = 90;
+                    degreeMarker.GetComponent<TextMesh>().text = "90\u00B0";
+                    break;
+                case 90:
+                    rotateIncrement = 0;
+                    degreeMarker.GetComponent<TextMesh>().text = "free";
+                    break;
             }
         }
+        if (Input.GetButtonDown("Offset Toggle") && !Input.GetButton("Select / Rotate")) {
+            //if we are in translate mode, block offset move
+            if (offsetMode) {
+                offsetMode = false;
+            } else {
+                offsetMode = true;
+            }
+        }
+
         //if manipulating an object in rotation mode, automatically turn off offsetMode
         if (Input.GetButton("Select / Rotate") && offsetMode && manipulateObj) {
             offsetMode = false;
@@ -215,9 +219,27 @@ public class CursorBehavior : MonoBehaviour {
             smoothedOffsetY = Mathf.Lerp(smoothedOffsetY, Input.GetAxisRaw("Camera Vertical"), offsetSmoothing);
             smoothedOffsetZ = Mathf.Lerp(smoothedOffsetZ, Input.GetAxisRaw("Camera Forward"), offsetSmoothing);
 
-            ghostOffset += Vector3.ProjectOnPlane(playerObj.transform.TransformDirection(new Vector3(smoothedOffsetX, 0f, 0f)), Vector3.up).normalized * Mathf.Abs(smoothedOffsetX) * offsetSpeed;
-            ghostOffset += new Vector3(0f, smoothedOffsetY * offsetSpeed, 0f);
-            ghostOffset += Vector3.ProjectOnPlane(playerObj.transform.TransformDirection(new Vector3(0f, 0f, smoothedOffsetZ)), Vector3.up).normalized * Mathf.Abs(smoothedOffsetZ) * offsetSpeed;
+            //if the snap axis is off, offset normally
+            if (snapAxis == SnapAxis.off) {
+                ghostOffset += Vector3.ProjectOnPlane(playerObj.transform.TransformDirection(new Vector3(smoothedOffsetX, 0f, 0f)), Vector3.up).normalized * Mathf.Abs(smoothedOffsetX) * offsetSpeed;
+                ghostOffset += new Vector3(0f, smoothedOffsetY * offsetSpeed, 0f);
+                ghostOffset += Vector3.ProjectOnPlane(playerObj.transform.TransformDirection(new Vector3(0f, 0f, smoothedOffsetZ)), Vector3.up).normalized * Mathf.Abs(smoothedOffsetZ) * offsetSpeed;
+            } else if (snapAxis == SnapAxis.x) {
+                //if snapped to x axis, snap x offset
+                ghostOffset += Vector3.ProjectOnPlane(Vector3.ProjectOnPlane(playerObj.transform.TransformDirection(new Vector3(smoothedOffsetX, 0f, 0f)), Vector3.up).normalized * Mathf.Abs(smoothedOffsetX) * offsetSpeed, snapAxisMasterObj.transform.right);
+                ghostOffset += Vector3.ProjectOnPlane(new Vector3(0f, smoothedOffsetY * offsetSpeed, 0f), snapAxisMasterObj.transform.right);
+                ghostOffset += Vector3.ProjectOnPlane(Vector3.ProjectOnPlane(playerObj.transform.TransformDirection(new Vector3(0f, 0f, smoothedOffsetZ)), Vector3.up).normalized * Mathf.Abs(smoothedOffsetZ) * offsetSpeed, snapAxisMasterObj.transform.right);
+            } else if (snapAxis == SnapAxis.y) {
+                //if snapped to y axis, snap y offset
+                ghostOffset += Vector3.ProjectOnPlane(Vector3.ProjectOnPlane(playerObj.transform.TransformDirection(new Vector3(smoothedOffsetX, 0f, 0f)), Vector3.up).normalized * Mathf.Abs(smoothedOffsetX) * offsetSpeed, snapAxisMasterObj.transform.up);
+                ghostOffset += Vector3.ProjectOnPlane(new Vector3(0f, smoothedOffsetY * offsetSpeed, 0f), snapAxisMasterObj.transform.up);
+                ghostOffset += Vector3.ProjectOnPlane(Vector3.ProjectOnPlane(playerObj.transform.TransformDirection(new Vector3(0f, 0f, smoothedOffsetZ)), Vector3.up).normalized * Mathf.Abs(smoothedOffsetZ) * offsetSpeed, snapAxisMasterObj.transform.up);
+            } else if (snapAxis == SnapAxis.z) {
+                //if snapped to z axis, snap z offset
+                ghostOffset += Vector3.ProjectOnPlane(Vector3.ProjectOnPlane(playerObj.transform.TransformDirection(new Vector3(smoothedOffsetX, 0f, 0f)), Vector3.up).normalized * Mathf.Abs(smoothedOffsetX) * offsetSpeed, snapAxisMasterObj.transform.forward);
+                ghostOffset += Vector3.ProjectOnPlane(new Vector3(0f, smoothedOffsetY * offsetSpeed, 0f), snapAxisMasterObj.transform.forward);
+                ghostOffset += Vector3.ProjectOnPlane(Vector3.ProjectOnPlane(playerObj.transform.TransformDirection(new Vector3(0f, 0f, smoothedOffsetZ)), Vector3.up).normalized * Mathf.Abs(smoothedOffsetZ) * offsetSpeed, snapAxisMasterObj.transform.forward);
+            }
         }
         if (manipulateGhost) {
             manipulateGhost.transform.position = transform.position + new Vector3(0f,manipulateGhost.GetComponent<Renderer>().bounds.extents.y+0.05f,0f) + ghostOffset;
@@ -228,6 +250,51 @@ public class CursorBehavior : MonoBehaviour {
             } else {
                 offsetMarker.SetActive(false);
             }
+        }
+    }
+    private void SnapAxisUpdate() {
+        //if Axis Snap is pressed on a moveable object while in regular manipulate mode while snapAxis is off
+        if (snapAxis == SnapAxis.off && objAtCursor && objAtCursor.GetComponent<Movable>() && Input.GetButtonDown("Axis Snap") && manipulateGhost && !offsetMode && !Input.GetButton("Select / Rotate")) {
+            snapAxis = SnapAxis.x;
+            //turn off offset mode if it's on
+            offsetMode = false;
+            snapAxisMasterObj = objAtCursor;
+            manipulateGhost.transform.rotation = snapAxisMasterObj.transform.rotation;
+            return;
+        }
+        //if the snapAxis is on and the snap axis key is pressed,
+        if (snapAxis != SnapAxis.off && Input.GetButtonDown("Axis Snap")) {
+            //cycle through the snap axes, and copy the rotation of the target object to the ghost UNLESS we are turning snap axis off
+            switch (snapAxis) {
+                case SnapAxis.x:
+                    snapAxis = SnapAxis.z;
+                //    snapAxisMasterObj = objAtCursor;
+                    manipulateGhost.transform.rotation = snapAxisMasterObj.transform.rotation;
+                    break;
+                case SnapAxis.z:
+                    snapAxis = SnapAxis.y;
+                //    snapAxisMasterObj = objAtCursor;
+                    manipulateGhost.transform.rotation = snapAxisMasterObj.transform.rotation;
+                    break;
+                case SnapAxis.y:
+                    snapAxisMasterObj = null;
+                    snapAxis = SnapAxis.off;
+                    break;
+            }
+        }
+        //if snap axis is on, snap the cursor(and thus the ghost) to the axis
+        switch (snapAxis) {
+            case SnapAxis.off:
+                break;
+            case SnapAxis.x:
+                transform.position = Vector3.Project(snapAxisMasterObj.transform.position, snapAxisMasterObj.transform.right) + Vector3.ProjectOnPlane(transform.position, snapAxisMasterObj.transform.right);// + snapAxisMasterObj.transform.position;
+                break;
+            case SnapAxis.y:
+                transform.position = Vector3.Project(snapAxisMasterObj.transform.position, snapAxisMasterObj.transform.up) + Vector3.ProjectOnPlane(transform.position, snapAxisMasterObj.transform.up);// + snapAxisMasterObj.transform.position;
+                break;
+            case SnapAxis.z:
+                transform.position = Vector3.Project(snapAxisMasterObj.transform.position, snapAxisMasterObj.transform.forward) + Vector3.ProjectOnPlane(transform.position, snapAxisMasterObj.transform.forward);// + snapAxisMasterObj.transform.position;
+                break;
         }
     }
 }
