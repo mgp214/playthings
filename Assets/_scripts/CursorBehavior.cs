@@ -9,12 +9,17 @@ public class CursorBehavior : MonoBehaviour {
     private GameObject objAtCursor,manipulateObj,manipulateGhost;
     private RaycastHit cursorRayHit;
     private int manipulatedLayerBuffer,rotateIncrement;
-    
+
+    public GameObject rotateXTemplate, rotateYTemplate, rotateZTemplate,degreeMarkerTemplate;
+    private GameObject rotateX, rotateY, rotateZ,degreeMarker;
+
     public bool offsetMode { get; private set; }
     private Vector3 ghostOffset;
     public float offsetSmoothing, offsetSpeed;
     private float smoothedOffsetX, smoothedOffsetY, smoothedOffsetZ;
     private GameObject playerObj;
+
+
 
     void Start() {
         playerObj = GameObject.Find("Camera");
@@ -55,11 +60,39 @@ public class CursorBehavior : MonoBehaviour {
             manipulateGhost = Instantiate(objAtCursor.GetComponent<Movable>().ghostTemplate) as GameObject;
             //copy manipulated objects rotation to it's ghost
             manipulateGhost.transform.rotation = manipulateObj.transform.rotation;
+            rotateX = Instantiate(rotateXTemplate, manipulateGhost.transform.position, manipulateGhost.transform.rotation * Quaternion.Euler(90f, 0f, 0f)) as GameObject;
+            rotateY = Instantiate(rotateYTemplate, manipulateGhost.transform.position, manipulateGhost.transform.rotation * Quaternion.Euler(0f, 90f, 0f)) as GameObject;
+            rotateZ = Instantiate(rotateZTemplate, manipulateGhost.transform.position, manipulateGhost.transform.rotation * Quaternion.Euler(0f, 0f, 0f)) as GameObject;
+            degreeMarker = Instantiate(degreeMarkerTemplate, manipulateGhost.transform.position, manipulateGhost.transform.rotation) as GameObject;
+            rotateX.transform.SetParent(manipulateGhost.transform,true);
+            rotateY.transform.SetParent(manipulateGhost.transform,true);
+            rotateZ.transform.SetParent(manipulateGhost.transform, true);
+            degreeMarker.transform.SetParent(manipulateGhost.transform, true);
+            //determine scaling for arrow mesh based on block bounds for the red guide
+            rotateX.transform.GetChild(0).localScale = new Vector3(manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.x + 1.0f, manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.z + 1.0f, 1f);
+            //determine letter placement based on block bounds for the red guide
+            rotateX.transform.GetChild(1).position += rotateX.transform.GetChild(0).TransformDirection(new Vector3(-manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.y - 1.0f, 1f, 0f));
+            rotateX.transform.GetChild(2).position += rotateX.transform.GetChild(0).TransformDirection(new Vector3(manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.y + 1.0f, 1f, 0f));
+            //determine scaling for arrow mesh based on block bounds for the green guide
+            rotateY.transform.GetChild(0).localScale = new Vector3(manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.z + 1.0f, manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.y + 1.0f, 1f);
+            //determine letter placement based on block bounds for the green guide
+            rotateY.transform.GetChild(1).position += rotateY.transform.GetChild(0).TransformDirection(new Vector3(-manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.z - 1.0f, 1f, 0f));
+            rotateY.transform.GetChild(2).position += rotateY.transform.GetChild(0).TransformDirection(new Vector3(manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.z + 1.0f, 1f, 0f));
+            //determine scaling for arrow mesh based on block bounds for the blue guide
+            rotateZ.transform.GetChild(0).localScale = new Vector3(manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.y + 1.0f, manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.x + 1.0f, 1f);
+            //determine letter placement based on block bounds for the blue guide
+            rotateZ.transform.GetChild(1).position += rotateZ.transform.GetChild(0).TransformDirection(new Vector3(-manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.x - 1.0f, 1f, 0f));
+            rotateZ.transform.GetChild(2).position += rotateZ.transform.GetChild(0).TransformDirection(new Vector3(manipulateGhost.GetComponent<MeshFilter>().mesh.bounds.extents.x + 1.0f, 1f, 0f));
+
         }
         //if manipulate key is released, place the manip obj at the ghost's position, zero it's velocities, and destroy the ghost
         if (Input.GetButtonUp("Manipulate") && manipulateGhost) {
             offsetMode = false;
             ghostOffset = Vector3.zero;
+            Destroy(rotateX);
+            Destroy(rotateY);
+            Destroy(rotateZ);
+            Destroy(degreeMarker);
             //check that the ghost isn't obstructed
             if (!manipulateGhost.GetComponent<GhostCollisionChecker>().placementBlocked) {
                 //stop all motion on the block (speedy thing goes in, still thing comes out)
@@ -74,30 +107,41 @@ public class CursorBehavior : MonoBehaviour {
             Destroy(manipulateGhost);
         }
         //if the rotate button is down, check for rotation
-        if (Input.GetButton("Select / Rotate") && manipulateGhost) {
-            if (rotateIncrement == 0) {
-                manipulateGhost.transform.Rotate(new Vector3(Input.GetAxis("Rotate Roll"), Input.GetAxis("Rotate Pitch"), Input.GetAxis("Rotate Yaw")) * freeRotationSpeed * Time.deltaTime);
+        if (manipulateGhost) {
+            if (Input.GetButton("Select / Rotate")) {
+                rotateX.SetActive(true);
+                rotateY.SetActive(true);
+                rotateZ.SetActive(true);
+                degreeMarker.SetActive(true);
+                if (rotateIncrement == 0) {
+                    manipulateGhost.transform.Rotate(new Vector3(Input.GetAxis("Rotate Roll"), Input.GetAxis("Rotate Pitch"), Input.GetAxis("Rotate Yaw")) * freeRotationSpeed * Time.deltaTime);
+                } else {
+                    if (Input.GetButtonDown("Rotate Pitch Forward")) {
+                        manipulateGhost.transform.Rotate(new Vector3(0f, rotateIncrement, 0f));
+                    }
+                    if (Input.GetButtonDown("Rotate Pitch Backward")) {
+                        manipulateGhost.transform.Rotate(new Vector3(0f, -rotateIncrement, 0f));
+                    }
+                    if (Input.GetButtonDown("Rotate Roll Left")) {
+                        manipulateGhost.transform.Rotate(new Vector3(-rotateIncrement, 0f, 0f));
+                    }
+                    if (Input.GetButtonDown("Rotate Roll Right")) {
+                        manipulateGhost.transform.Rotate(new Vector3(rotateIncrement, 0f, 0f));
+                    }
+                    if (Input.GetButtonDown("Rotate Yaw Left")) {
+                        manipulateGhost.transform.Rotate(new Vector3(0f, 0f, -rotateIncrement));
+                    }
+                    if (Input.GetButtonDown("Rotate Yaw Right")) {
+                        manipulateGhost.transform.Rotate(new Vector3(0f, 0f, rotateIncrement));
+                    }
+                }
             } else {
-                if (Input.GetButtonDown("Rotate Pitch Forward")) {
-                    manipulateGhost.transform.Rotate(new Vector3(0f, rotateIncrement, 0f));
-                }
-                if (Input.GetButtonDown("Rotate Pitch Backward")) {
-                    manipulateGhost.transform.Rotate(new Vector3(0f, -rotateIncrement, 0f));
-                }
-                if (Input.GetButtonDown("Rotate Roll Left")) {
-                    manipulateGhost.transform.Rotate(new Vector3(-rotateIncrement, 0f, 0f));
-                }
-                if (Input.GetButtonDown("Rotate Roll Right")) {
-                    manipulateGhost.transform.Rotate(new Vector3(rotateIncrement, 0f, 0f));
-                }
-                if (Input.GetButtonDown("Rotate Yaw Left")) {
-                    manipulateGhost.transform.Rotate(new Vector3(0f, 0f, -rotateIncrement));
-                }
-                if (Input.GetButtonDown("Rotate Yaw Right")) {
-                    manipulateGhost.transform.Rotate(new Vector3(0f, 0f, rotateIncrement));
-                }
+                rotateX.SetActive(false);
+                rotateY.SetActive(false);
+                rotateZ.SetActive(false);
+                degreeMarker.SetActive(false);
             }
-        }
+        } 
         //cycle through rotation increments if the rotatation increment button is pressed
         if (Input.GetButtonDown("Manipulate Toggle")) {
             //if we are in rotate mode, toggle angle snap
@@ -105,12 +149,19 @@ public class CursorBehavior : MonoBehaviour {
                 switch (rotateIncrement) {
                     case 0:
                         rotateIncrement = 15;
+                        degreeMarker.GetComponent<TextMesh>().text = "15\u00B0";
                         break;
                     case 15:
+                        degreeMarker.GetComponent<TextMesh>().text = "45\u00B0";
                         rotateIncrement = 45;
                         break;
                     case 45:
+                        rotateIncrement = 90;
+                        degreeMarker.GetComponent<TextMesh>().text = "90\u00B0";
+                        break;
+                    case 90:
                         rotateIncrement = 0;
+                        degreeMarker.GetComponent<TextMesh>().text = "free";
                         break;
                 }
             } else {

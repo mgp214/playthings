@@ -1080,6 +1080,10 @@ MonoBehaviour:
   cursorLayerMask:
     serializedVersion: 2
     m_Bits: 1280
+  rotateXTemplate: {fileID: 141454, guid: 9e98936219f6ad448902b272810c8caf, type: 2}
+  rotateYTemplate: {fileID: 190976, guid: c562978ed8b789e4593d261ec2ea70a3, type: 2}
+  rotateZTemplate: {fileID: 164896, guid: 0b68ebe3dd036114e8b244a159fee55f, type: 2}
+  degreeMarkerTemplate: {fileID: 127898, guid: d91ba00e9feb28d469fa1bf59c04545b, type: 2}
   offsetSmoothing: .100000001
   offsetSpeed: .100000001
 --- !u!4 &1738535876 stripped
@@ -1309,7 +1313,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 427944, guid: 1181025ae08c28448a24d8292f4935f6, type: 2}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: .382323414
       objectReference: {fileID: 0}
     - target: {fileID: 427944, guid: 1181025ae08c28448a24d8292f4935f6, type: 2}
       propertyPath: m_LocalRotation.z
@@ -1317,7 +1321,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 427944, guid: 1181025ae08c28448a24d8292f4935f6, type: 2}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: .924028575
       objectReference: {fileID: 0}
     - target: {fileID: 427944, guid: 1181025ae08c28448a24d8292f4935f6, type: 2}
       propertyPath: m_RootOrder
