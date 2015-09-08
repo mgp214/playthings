@@ -60,10 +60,27 @@ public class CursorBehavior : MonoBehaviour {
             manipulateGhost = Instantiate(objAtCursor.GetComponent<Movable>().ghostTemplate) as GameObject;
             //copy manipulated objects rotation to it's ghost
             manipulateGhost.transform.rotation = manipulateObj.transform.rotation;
+            //create the rotation guides
             rotateX = Instantiate(rotateXTemplate, manipulateGhost.transform.position, manipulateGhost.transform.rotation * Quaternion.Euler(90f, 0f, 0f)) as GameObject;
             rotateY = Instantiate(rotateYTemplate, manipulateGhost.transform.position, manipulateGhost.transform.rotation * Quaternion.Euler(0f, 90f, 0f)) as GameObject;
             rotateZ = Instantiate(rotateZTemplate, manipulateGhost.transform.position, manipulateGhost.transform.rotation * Quaternion.Euler(0f, 0f, 0f)) as GameObject;
+            //create the degree snap marker
             degreeMarker = Instantiate(degreeMarkerTemplate, manipulateGhost.transform.position, manipulateGhost.transform.rotation) as GameObject;
+            //update the degree snap marker based on current value of rotateIncrement
+            switch (rotateIncrement) {
+                case 0:
+                    degreeMarker.GetComponent<TextMesh>().text = "free";
+                    break;
+                case 15:
+                    degreeMarker.GetComponent<TextMesh>().text = "15\u00B0";
+                    break;
+                case 45:
+                    degreeMarker.GetComponent<TextMesh>().text = "45\u00B0";
+                    break;
+                case 90:
+                    degreeMarker.GetComponent<TextMesh>().text = "90\u00B0";
+                    break;
+            }
             rotateX.transform.SetParent(manipulateGhost.transform,true);
             rotateY.transform.SetParent(manipulateGhost.transform,true);
             rotateZ.transform.SetParent(manipulateGhost.transform, true);
@@ -98,6 +115,16 @@ public class CursorBehavior : MonoBehaviour {
                 //stop all motion on the block (speedy thing goes in, still thing comes out)
                 manipulateObj.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 manipulateObj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                //check for blocks near the teleported block
+                Collider[] colliderArray = Physics.OverlapSphere(manipulateObj.transform.position,Mathf.Max(new float[] {manipulateObj.GetComponent<Renderer>().bounds.extents.x,
+                                                                                                                         manipulateObj.GetComponent<Renderer>().bounds.extents.y,
+                                                                                                                         manipulateObj.GetComponent<Renderer>().bounds.extents.z}));
+                foreach (Collider collider in colliderArray) {
+                    if (collider.GetComponent<Rigidbody>()) {
+                        collider.gameObject.GetComponent<Rigidbody>().WakeUp();
+                    }
+                }
+
                 //copy position info from ghost to actual block
                 manipulateObj.transform.position = manipulateGhost.transform.position;
                 manipulateObj.transform.rotation = manipulateGhost.transform.rotation;

@@ -414,7 +414,7 @@ MonoBehaviour:
   maxHeight: 100
   cameraSmoothing: .100000001
   clampInDegrees: {x: 360, y: 180}
-  lockCursor: 0
+  lockCursor: 1
   sensitivity: {x: 2, y: 2}
   smoothing: {x: 3, y: 3}
   targetDirection: {x: 0, y: 0}
